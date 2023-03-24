@@ -1,9 +1,11 @@
 import PySimpleGUI as sg
-import APIaug
-import requests
+import os
+import qrcode
 
 
-url = 'http://192.168.0.93:5000/generate_qrcode'
+def CriaPasta():
+    if not os.path.isdir("QRcodes"):
+        os.mkdir('QRcodes')
 
 def TelaLogin():
     sg.theme('LightBrown')
@@ -31,7 +33,6 @@ def ChamarApp():
         window, event, values = sg.read_all_windows()
         #TELA LOGIN
         if window == janela and event == sg.WINDOW_CLOSED:
-            return '','','','';
             break
         elif window == janela and event == 'confirmComMesa':
            if values['mesa'] == '' or values['ip'] == '':
@@ -43,8 +44,11 @@ def ChamarApp():
                         'appLink': f'{ip}:5002/mesa',
                         'mesa': mesa
                         }
-                x2 = requests.post(url, json = myobj2)
-                APIaug.GeraQRcode(x2,mesa)
+                mesaString = f'http://{myobj2["appLink"]}/{myobj2["mesa"]}'
+                CriaPasta()
+                ImgQRcode = qrcode.make(mesaString)
+                ImgQRcode.save(f'QRcodes/qrcode_{myobj2["mesa"]}.png')
+                # APIaug.GeraQRcode(x2,mesa)
         elif window == janela and event == 'confirmSemMesa':
             if values['ssid'] == '' or values['password'] == '' or values['encryption'] == '':
                 sg.popup('Preencha os primeiros três campos para prosseguir!')
@@ -57,8 +61,11 @@ def ChamarApp():
                         'password': password,
                         'encryption': encryption
                         }
-                x = requests.post(url, json = myobj)
-                APIaug.GeraQRcode(x,'wifi')
+                wifiString = f'WIFI:S:{myobj["ssid"]};P:{myobj["password"]};H:{False};T:{myobj["encryption"]};'
+                CriaPasta()
+                ImgQRcode = qrcode.make(wifiString)
+                ImgQRcode.save(f'QRcodes/qrcode_wifi.png')
+                # APIaug.GeraQRcode(x,'wifi')
 
 
 
