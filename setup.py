@@ -12,7 +12,7 @@ if sys.platform == "win32":
 
 setup(
     name="Gerador de QRcode",
-    version="0.1.1",
+    version="1.1.0",
     description="gerador de QRcode!",
     options={"build_exe": build_exe_options},
     executables=[Executable("tela.py", base=base)]
